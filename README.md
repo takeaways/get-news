@@ -1,6 +1,6 @@
 # get-news
 
-해커뉴스
+parcel 써보기
 
 # Start
 
