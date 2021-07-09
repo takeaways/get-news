@@ -217,7 +217,11 @@ class NewsPage {
         return this.renderDetail(id);
       }
       case '/page': {
-        this.currentPage = Number(hash.match(/#\/page\/(\d+)/)?.[1] ?? 1);
+        const page = Number(hash.match(/#\/page\/(\d+)/)?.[1] ?? 1);
+        if (this.currentPage !== page) {
+          this.currentPage = page;
+          this.items = this.attachRead(await this.getNews());
+        }
         return this.renderList();
       }
       default: {

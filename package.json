@@ -9,7 +9,7 @@
     "watch:css": "tailwindcss -i src/assets/css/style.css -o src/assets/tailwind/tailwind.css -w",
     "build": "parcel build ./src/index.html --public-url ./",
     "predeploy": "npm run build",
-    "deploy": "gh-pages -d build"
+    "deploy": "gh-pages -d dist"
   },
   "repository": {
     "type": "git",
@@ -21,7 +21,7 @@
   "bugs": {
     "url": "https://github.com/takeaways/get-news/issues"
   },
-  "homepage": "https://github.com/takeaways/get-news",
+  "homepage": "http://takeaways.github.io/get-news",
   "devDependencies": {
     "@babel/core": "^7.14.6",
     "@babel/preset-env": "^7.14.7",

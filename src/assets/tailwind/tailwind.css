@@ -690,10 +690,6 @@ video {
   height: 100%;
 }
 
-.h-20 {
-  height: 5rem;
-}
-
 .min-h-screen {
   min-height: 100vh;
 }
@@ -846,6 +842,21 @@ video {
 
 .duration-500 {
   transition-duration: 500ms;
+}
+
+.visited\:bg-blue-100:visited {
+  --tw-bg-opacity: 1;
+  background-color: rgba(219, 234, 254, var(--tw-bg-opacity));
+}
+
+.visited\:bg-red-100:visited {
+  --tw-bg-opacity: 1;
+  background-color: rgba(254, 226, 226, var(--tw-bg-opacity));
+}
+
+.visited\:bg-green-100:visited {
+  --tw-bg-opacity: 1;
+  background-color: rgba(209, 250, 229, var(--tw-bg-opacity));
 }
 
 .hover\:bg-blue-100:hover {
