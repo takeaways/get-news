@@ -19,7 +19,9 @@ class NewsPage {
     this.#hasNext = true;
     this.#items = [];
 
-    window.addEventListener('hashchange', this.render);
+    window.addEventListener('hashchange', () => {
+      this.render();
+    });
   }
 
   #resetPage = () => {
@@ -38,8 +40,27 @@ class NewsPage {
     return json;
   };
 
+  #makeComment = (comments, called = 0) => {
+    return comments
+      .map(({ user, time_ago, content, comments }) => {
+        if (comments.length) {
+          return this.#makeComment(comments, called++);
+        }
+        return `
+        <div style="padding-left: ${called * 40}px" class="mt-4">
+          <div class="text-gray-400">
+            <i class="fa fa-sort-up mr-2"></i>
+            <strong>${user}</strong> ${time_ago}
+          </div>
+          <p class="text-gray-700">${content}</p>
+        </div>  
+        `;
+      })
+      .join('');
+  };
+
   #renderContent = async id => {
-    const { title, content } = await this.#getNew(id);
+    const { title, content, comments } = await this.#getNew(id);
 
     const template = `
       <div class="bg-gray-600 min-h-screen pb-8">
@@ -70,11 +91,12 @@ class NewsPage {
       </div>
     `;
 
-    this.#updatePage(this.#updateTemplates(template, [[' {{comments}}', 'comments']]));
+    this.#updatePage(
+      this.#updateTemplates(template, [[' {{comments}}', this.#makeComment(comments)]]),
+    );
   };
 
   #renderList = async () => {
-    this.#items = await this.#getNews();
     this.#hasNext = this.#items.length === 30;
 
     const template = `
@@ -102,13 +124,13 @@ class NewsPage {
         return `
           <div class="p-6 ${
             read ? 'bg-red-500' : 'bg-white'
-          } mt-6 rounded-lg shadow-md transition-colors duration-500 hover:bg-green-100">
+          } mt-6 rounded-lg shadow-md transition-colors duration-500 hover:bg-blue-100">
           <div class="flex">
             <div class="flex-auto">
               <a href="#/show/${id}">${title}</a>  
             </div>
             <div class="text-center text-sm">
-              <div class="w-10 text-white bg-green-300 rounded-lg px-0 py-2">${comments_count}</div>
+              <div class="w-10 text-white bg-blue-300 rounded-lg px-0 py-2">${comments_count}</div>
             </div>
           </div>
           <div class="flex mt-3">
@@ -125,10 +147,12 @@ class NewsPage {
 
     const paginationData = `
     <div>
-      <a href="#/page/${Number(this.#currentPage) - 1 || 1}" class="text-gray-500">이전 페이지</a>
+      <a href="#/page/${
+        Number(this.#currentPage) - 1 || 1
+      }" class="text-gray-500 fas fa-arrow-circle-left"></a>
       <a href="#/page/${
         this.#hasNext ? Number(this.#currentPage) + 1 : this.#currentPage
-      }" class="text-gray-500">다음 페이지</a>
+      }" class="text-gray-500 fas fa-arrow-circle-right"></a>
     </div>
     `;
 
@@ -156,10 +180,21 @@ class NewsPage {
     return template;
   };
 
-  render = () => {
+  #attachRead = items => {
+    return items.map(item => {
+      item.read = false;
+      return item;
+    });
+  };
+
+  render = async () => {
     const { hash } = location;
 
     const nameSpace = hash.match(/\/[a-z]+/)?.[0];
+
+    if (!this.#items.length) {
+      this.#items = this.#attachRead(await this.#getNews());
+    }
 
     switch (nameSpace) {
       case '/show': {

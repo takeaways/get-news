@@ -771,6 +771,11 @@ video {
   background-color: rgba(110, 231, 183, var(--tw-bg-opacity));
 }
 
+.bg-blue-300 {
+  --tw-bg-opacity: 1;
+  background-color: rgba(147, 197, 253, var(--tw-bg-opacity));
+}
+
 .p-4 {
   padding: 1rem;
 }
@@ -880,4 +885,9 @@ video {
 .hover\:bg-green-100:hover {
   --tw-bg-opacity: 1;
   background-color: rgba(209, 250, 229, var(--tw-bg-opacity));
+}
+
+.hover\:bg-blue-100:hover {
+  --tw-bg-opacity: 1;
+  background-color: rgba(219, 234, 254, var(--tw-bg-opacity));
 }
