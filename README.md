@@ -1,3 +1,9 @@
 # get-news
 
-해커뉴스 데이터를 가지고 페이지 만들기
+해커뉴스
+
+# Start
+```bash
+npm i
+npm start
+```

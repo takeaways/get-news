@@ -20,5 +20,8 @@
   "homepage": "https://github.com/takeaways/get-news#readme",
   "devDependencies": {
     "eslint": "^7.30.0"
+  },
+  "dependencies": {
+    "babel-polyfill": "^6.26.0"
   }
 }
