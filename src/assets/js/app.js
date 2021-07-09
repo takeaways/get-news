@@ -9,7 +9,6 @@ class NewsPage {
   #hasNext;
   #items;
   #template;
-  #baseTemplate;
 
   constructor(apiUrl, contentUrl, container) {
     this.#API_URL = apiUrl;
@@ -23,10 +22,6 @@ class NewsPage {
       this.render();
     });
   }
-
-  #resetPage = () => {
-    document.querySelector(this.#CONTAINER).innerHTML = '';
-  };
 
   #getNews = async () => {
     const response = await fetch(this.#API_URL.replace('@page', this.#currentPage));
@@ -59,8 +54,14 @@ class NewsPage {
       .join('');
   };
 
-  #renderContent = async id => {
+  #renderDetail = async id => {
     const { title, content, comments } = await this.#getNew(id);
+    for (const item of this.#items) {
+      if (item.id === Number(id)) {
+        item.read = true;
+        break;
+      }
+    }
 
     const template = `
       <div class="bg-gray-600 min-h-screen pb-8">
@@ -136,7 +137,7 @@ class NewsPage {
           <div class="flex mt-3">
             <div class="grid grid-cols-3 text-sm text-gray-500">
               <div><i class="fas fa-user mr-1"></i>${user}</div>
-              <div><i class="fas fa-heart mr-1"></i>${points}</div>
+              <div><i class="fas fa-heart mr-1"></i>${points ?? 0}</div>
               <div><i class="far fa-clock mr-1"></i>${time_ago}</div>
             </div>  
           </div>
@@ -175,11 +176,6 @@ class NewsPage {
     return template;
   };
 
-  #updateTemplate = (template, key, data) => {
-    template.replace(key, data);
-    return template;
-  };
-
   #attachRead = items => {
     return items.map(item => {
       item.read = false;
@@ -199,7 +195,7 @@ class NewsPage {
     switch (nameSpace) {
       case '/show': {
         const id = hash.match(/\/[0-9]+/)?.[0].substring(1);
-        return this.#renderContent(id);
+        return this.#renderDetail(id);
       }
       case '/page': {
         this.#currentPage = hash.match(/#\/page\/(\d+)/)?.[1];
