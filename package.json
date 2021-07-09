@@ -2,12 +2,14 @@
   "name": "get-news",
   "version": "1.0.0",
   "description": "해커뉴스 데이터를 가지고 페이지 만들기",
-  "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "npm-run-all --parallel 'watch:*'",
     "watch:start": "parcel serve src/index.html",
-    "watch:css": "tailwindcss -i src/assets/css/style.css -o src/assets/tailwind/tailwind.css -w"
+    "watch:css": "tailwindcss -i src/assets/css/style.css -o src/assets/tailwind/tailwind.css -w",
+    "build": "parcel build ./src/index.html --public-url ./",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build"
   },
   "repository": {
     "type": "git",
@@ -19,7 +21,7 @@
   "bugs": {
     "url": "https://github.com/takeaways/get-news/issues"
   },
-  "homepage": "https://github.com/takeaways/get-news#readme",
+  "homepage": "https://github.com/takeaways/get-news",
   "devDependencies": {
     "@babel/core": "^7.14.6",
     "@babel/preset-env": "^7.14.7",
@@ -31,6 +33,7 @@
     "eslint": "^7.30.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-prettier": "^3.4.0",
+    "gh-pages": "^3.2.3",
     "npm-run-all": "^4.1.5",
     "parcel": "^2.0.0-nightly.760",
     "postcss": "^8.3.5",
