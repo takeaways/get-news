@@ -1,65 +1,71 @@
-import 'babel-polyfill'
-const API_URL = 'https://api.hnpwa.com/v0/news/1.json'
-const CONTENT_URL = 'https://api.hnpwa.com/v0/item/@id.json'
+import 'babel-polyfill';
+const API_URL = 'https://api.hnpwa.com/v0/news/1.json';
+const CONTENT_URL = 'https://api.hnpwa.com/v0/item/@id.json';
+const CONTAINER = '#root';
 
-const CONTAINER = "#root"
+class NewsPage {
+  #API_URL;
+  #CONTENT_URL;
+  #CONTAINER;
 
+  constructor(apiUrl, contentUrl, container) {
+    this.#API_URL = apiUrl;
+    this.#CONTENT_URL = contentUrl;
+    this.#CONTAINER = container;
 
-const view = {
-  append:(target, child) => {
-    document.querySelector(target).appendChild(child)
+    window.addEventListener('hashchange', this.#renderContent);
+  }
+
+  #getNews = async () => {
+    const response = await fetch(API_URL);
+    const json = await response.json();
+    return json;
+  };
+
+  #getNew = async (id = 0) => {
+    const response = await fetch(CONTENT_URL.replace('@id', id));
+    const json = await response.json();
+    return json;
+  };
+
+  #renderContent = async () => {
+    const { title } = await this.#getNew(location.hash.slice(1));
+    const template = document.createElement('div');
+    template.innerHTML = `
+      <div>
+        <h1>${title}</h1>
+      </div>
+    `;
+    this.#append(CONTAINER, template.firstElementChild);
+  };
+
+  #renderList = async () => {
+    const data = await this.#getNews();
+    const template = document.createElement('div');
+    template.innerHTML = `
+      <ul>
+        ${data
+          .map(({ id, title, comments_count }) => {
+            return `
+            <li>
+              <a href=#${id}>${title} (${comments_count})</a>
+            </li>
+          `;
+          })
+          .join('')}
+      </ul>
+    `;
+    this.#append(CONTAINER, template.firstElementChild);
+  };
+
+  #append = (target, child) => {
+    document.querySelector(target).appendChild(child);
+  };
+
+  render() {
+    this.#renderList();
   }
 }
 
-const getNews = async () => {
-  const response = await fetch(API_URL)
-  const json = await response.json();
-  return json
-}
-
-const getNew = async (id = 0) => {
-  const response = await fetch(CONTENT_URL.replace("@id", id))
-  const json = await response.json();
-  return json
-}
-
-
-const renderList = async () => {
-  const ul = document.createElement("ul")
-  const data = await getNews();
-
-  data.forEach(({id, title, comments_count}) => {
-    const li = document.createElement("li");
-    const a = document.createElement("a");
-    a.textContent =`${title} (${comments_count})` 
-    a.href = `#${id}` 
-    
-
-    li.appendChild(a)
-    ul.appendChild(li)
-  })
-
-  view.append(CONTAINER, ul)
-}
-
-const renderContent = async () => {
-  const {title} = await getNew(location.hash.slice(1))
-  
-  const content = document.createElement('div')
-  const heading = document.createElement('h1')
-
-  heading.innerText = title
-
-  content.appendChild(heading)
-
-  view.append(CONTAINER, content)
-}
-
-const main = async () => {
-  renderList()
-
-  window.addEventListener("hashchange",renderContent)
-}
-
-main();
-
+const newsPage = new NewsPage();
+newsPage.render(API_URL, CONTENT_URL, CONTAINER);

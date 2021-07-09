@@ -19,7 +19,11 @@
   },
   "homepage": "https://github.com/takeaways/get-news#readme",
   "devDependencies": {
-    "eslint": "^7.30.0"
+    "babel-eslint": "^10.1.0",
+    "eslint": "^7.30.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-prettier": "^3.4.0",
+    "prettier": "^2.3.2"
   },
   "dependencies": {
     "babel-polyfill": "^6.26.0"
